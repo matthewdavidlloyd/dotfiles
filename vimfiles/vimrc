@@ -1,0 +1,248 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins (configured with vim-plug - don't forget to :PlugInstall " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible   " be iMproved
+filetype off       " required!
+
+if has('nvim')
+  let g:plugin_path='~/.nvim/plugged'
+else
+  let g:plugin_path='~/.vim/plugged'
+endif
+
+call plug#begin(g:plugin_path)
+
+" File 
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'       " Better commenting
+
+" Statusline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'naddeoa/vim-visual-page-percent'
+
+" Typing/Autocomplete support
+Plug 'jiangmiao/auto-pairs'           " Automatically pair quotes, braces etc.
+Plug 'ajh17/VimCompletesMe'           " Super lightweight smart-tab for ins-completion
+Plug 'terryma/vim-multiple-cursors'   " Sublime Text style multiple cursors
+
+" Git integration
+Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  " Git command wrappers
+Plug 'airblade/vim-gitgutter'                       " Show's what's changed
+                                                    " since previous version
+" Python stuff
+Plug 'tmhedberg/SimpylFold'           " Nice folding
+Plug 'vim-scripts/indentpython.vim'   " Nice Indentation
+Plug 'nvie/vim-flake8'                " PEP8 Checking
+
+" Web stuff
+Plug 'jaxbot/browserlink.vim'     " Live update browser when editing html and stuff
+                                  " This only supports Python2.7, so need to update 
+                                  " to Python3 as per github.com/jaxbot/browserlink.vim/pull/42
+
+" Colours
+Plug 'altercation/vim-colors-solarized'
+
+
+
+call plug#end()
+
+filetype plugin indent off
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General                                                  " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Autoread when file is changed from outside
+set autoread
+
+" Map leader to ,
+let mapleader=","
+let g:mapleader=","
+
+" Helper functions
+if filereadable(glob("~/.vim/functions/helpers.vim"))
+  source ${HOME}/.vim/functions/helpers.vim
+endif
+
+" Set colours properly
+set t_Co=256
+
+" Encoding
+set encoding=utf-8
+
+" Shift is hard to let go of :(
+command! Wq wq
+command! WQ wq
+command! W w
+command! Q q
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM User Interface                                       " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the cursor - when moving vertically with j/k
+set so=7
+
+" Command tab-completion
+set wildmenu
+set wildmode=list:full,full
+set wildignore=*.o,*~,*.pyc,*.so,*.swp,tmp/
+set wildignore+=*.pdf,*.jpg,*.dmg,*.zip,*.png,*.gif
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+
+" Always show current position
+set ruler
+
+" Height of command bar
+set cmdheight=2
+
+" Hide buffer when abandoned
+set hid
+
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+" Search
+set nohlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" Show matching brackets when text indicator is over them
+set showmatch 
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" Line numbers
+set number
+set norelativenumber
+set nocursorline
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Colours and Fonts                                        " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Font
+set guifont=Fira\ Mono\ for\ Powerline:h11
+
+" Syntax highlighting
+syntax on
+
+" Solarized colour scheme
+set background=dark
+colorscheme solarized
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Files, backup and undo                                   " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Nice git things
+if PluginLoaded('vim-fugitive')
+  nnoremap <Leader>gb :Gblame<CR>
+  nnoremap <Leader>gs :Gstatus<CR>
+  nnoremap <Leader>gd :Gdiff<CR>
+  nnoremap <Leader>gc :Gcommit<CR>
+  nnoremap <Leader>gp :Gpush<CR>
+  nnoremap <Leader>gl :Glog<CR>:copen<CR>
+endif
+
+if PluginLoaded('nerdtree')
+  nnoremap <Leader>n :NERDTreeToggle<CR>
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Text, tab and indent                                     " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tabs
+set expandtab
+set smarttab
+set tabstop=2
+set shiftwidth=2
+
+" Auto indent
+set ai 
+
+" Smart indent
+set si 
+
+" Wrap lines
+set wrap 
+
+" Folding
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Visual mode                                              " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Moving around, tabs, windows and buffers                 " 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable arrow keys
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+if has('nvim')
+  nmap <BS> <C-W>h
+else
+  map <C-h> <C-W>h
+endif
+map <C-l> <C-W>l
+
+" NVim terminal stuff
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+  nnoremap <leader>t :below 10sp term://$SHELL<cr>i
+endif
+
+
+" Split opening positions
+set splitright
+set splitbelow
+
+" Return to last edit position when opening files
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Status line                                              " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Always show status line
+set laststatus=2
+
+let g:airline_theme='solarized' 
+
+set noshowmode
+
+let g:airline#extensions#branch#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:Powerline_symbols='unicode'
+set ttimeoutlen=50
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Spellchecking                                            " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ss to toggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Misc                                                     " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Extra Vimfiles                                           " 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

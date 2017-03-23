@@ -1,0 +1,45 @@
+[user]
+  name = Matthew Lloyd
+  email = matthew.lloyd94@gmail.com
+[credential]
+  helper = osxkeychain
+[color]
+  ui = auto
+[color "branch"]
+  current = red
+  local = blue
+  remote = yellow
+[color "diff"]
+  meta = yellow bold
+  frag = cyan bold
+  old = red reverse
+  new = green reverse
+  whitespace = white reverse
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = blue
+  branch = blue
+[alias]
+  amend = commit -a --amend
+  conf = config --global -e
+  history = log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  hist = log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  summary = log --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  sum = log --pretty=format:'%Cred%h%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  update = pull --rebase
+  todo = ! git status --porcelain | sed "s/^...//" | xargs ag "TODO" -B 3 -A 10
+  up = pull --rebase
+  cm = commit -m
+  rmbranch = "!f(){ git branch -D ${1} && git push origin --delete ${1}; };f"
+  files = "!f() { git diff --name-status $1^ $1; }; f"
+  pluck = "!f() { git checkout $2 -- $1; }; f"
+  alias = "!git config -l | grep alias | cut -c 7-"
+  destroy = reset --hard HEAD
+  filelog = log -u
+  open = "!f() { vim `git status --porcelain | sed -ne 's/^ M //p'`; };f"
+  branches = "!f() { fbr; };f"
+[push]
+    default = simple
+[core]
+  excludesfile = /Users/ian/.gitignore
