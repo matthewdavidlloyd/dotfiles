@@ -23,10 +23,14 @@ function! browserlink#EvaluateWord()
 endfunction
 
 function! browserlink#evaluateJS(js)
-"  python urllib2.urlopen(urllib2.Request(vim.eval("g:bl_serverpath") + "/evaluate", vim.eval("a:js")))
-  python3 urlopen(vim.eval("g:bl_serverpath") + "/evaluate", str.encode(vim.eval("a:js")))
-"  python3 urlopen(request.Request(vim.eval("g:bl_serverpath") + "/evaluate", vim.eval("a:js")))
-"  python3 print(vim.eval("a:js"))
+python3 <<EOF
+try:
+  urlopen(vim.eval("g:bl_serverpath") + "/evaluate", str.encode(vim.eval("a:js")))
+except Exception as e:
+  print("Failed to open: {} the node server probably isn't running.".format(vim.eval("g:bl_serverpath")))
+  print("Try running \"$ node ~/.nvim/plugged/browserlink.vim/browserlink/browserlink.js\" in another terminal.")
+  print("The error mesage is: {}".format(e))
+EOF
 endfunction
 
 function! browserlink#sendCommand(command)

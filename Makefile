@@ -15,7 +15,7 @@ neovim:
 	ln -sf $(ROOT_DIR)/vimfiles/ftplugin $(HOME)/.config/ftplugin
 	curl -fLo $(HOME)/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	nvim -c PlugInstall -c quitall
-	cp -r $(ROOT_DIR)/dotfiles/vimfiles/fixes/browserlink.vim $(HOME)/.nvim/plugged/browserlink.vim/autoload/browserlink.vim
+	cp -r $(ROOT_DIR)/vimfiles/fixes/browserlink.vim $(HOME)/.nvim/plugged/browserlink.vim/autoload/browserlink.vim
 
 vimlinks:
 	rm -rf ~/.vim
