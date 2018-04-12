@@ -1,12 +1,49 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-install: vim neovim git bash task scripts
+install: setup homebrew python git bash scripts applescripts scientific-python
 
-vim: vimlinks
+setup:
+	mkdir -p $(HOME)/.scratch
+
+homebrew: setup
+	# TODO: Make this actually do somthing
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+python: setup homebrew
+	# install python 3
+	brew install python
+
+	# invalidate bash's lookup cache for python
+	hash -r python
+
+	# Install virtualenv
+	pip3 install virtualenv
+
+	# Create a file in which to store our virtualenv
+	mkdir -p $(HOME)/.virtualenv
+
+vimlinks: setup
+	rm -rf ~/.vim
+	mkdir -p $(HOME)/.vim
+	mkdir -p $(HOME)/.vim/functions
+	ln -sf $(ROOT_DIR)/vimfiles/*.vim $(HOME)/.vim/functions
+	ln -sf $(ROOT_DIR)/vimfiles/vimrc $(HOME)/.vimrc
+
+powerline: setup python
+	# Install globally
+	# https://powerline.readthedocs.io/en/latest/installation/osx.html
+	/usr/local/bin/pip3 install --user powerline-status
+
+	# Also install the patched powerline fonts
+	git clone https://github.com/powerline/fonts.git $(HOME)/.scratch/fonts --depth=1
+	$(HOME)/.scratch/fonts/install.sh
+	rm -rf $(HOME)/.scratch/fonts/fonts
+
+vim: setup vimlinks powerline
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	vim -c PlugInstall -c quitall
 
-neovim: 
+neovim: setup python vimlinks powerline vim
 	rm -rf $(HOME)/.config/nvim
 	mkdir -p $(HOME)/.config/nvim
 	mkdir -p $(HOME)/.config/nvim/ftplugin
@@ -17,50 +54,44 @@ neovim:
 	nvim -c PlugInstall -c quitall
 	cp -r $(ROOT_DIR)/vimfiles/fixes/browserlink.vim $(HOME)/.nvim/plugged/browserlink.vim/autoload/browserlink.vim
 
-vimlinks:
-	rm -rf ~/.vim
-	mkdir $(HOME)/.vim
-	mkdir $(HOME)/.vim/functions
-	ln -sf $(ROOT_DIR)/vimfiles/*.vim $(HOME)/.vim/functions
-	ln -sf $(ROOT_DIR)/vimfiles/vimrc $(HOME)/.vimrc
-
-git:
+git: setup
 	ln -sf $(ROOT_DIR)/gitfiles/gitconfig $(HOME)/.gitconfig
 	ln -sf $(ROOT_DIR)/gitfiles/gitignore $(HOME)/.gitignore
 
-bash:
+bash: setup
 	ln -sf $(ROOT_DIR)/bash_profile $(HOME)/.bash_profile
 	ln -sf $(ROOT_DIR)/bashrc $(HOME)/.bashrc
 
-task:
-	ln -sf $(ROOT_DIR)/taskrc $(HOME)/.taskrc
-
-scripts:
+scripts: setup
 	ln -sf $(ROOT_DIR)/bin $(HOME)/.scripts
 	
-applescripts:
+applescripts: setup
 	ln -sf $(ROOT_DIR)/applescripts $(HOME)/.applescripts
 
-scientific:
-	# set up some taps and update brew
-	brew tap homebrew/science 		# a lot of cool formulae for scientific tools
-	brew tap homebrew/python 			# numpy, scipy, matplotlib, ...
-	brew update && brew upgrade
-	# install a brewed python
-	brew install python3
-	# invalidate bash's lookup cache for python
-	hash -r python  
-	# Check this all worked 
-	brew doctor
-	# Install python stuff
-	pip install numpy
-	pip install scipy
-	pip install matplotlib
+scientific-python: setup python
+	# Make a new virtualenv
+	virtualenv -p /usr/local/bin/python3.6 $(HOME)/.virtualenv/scientific_python; \
+
+	( \
+		source $(HOME)/.virtualenv/scientific_python/bin/activate; \
+		pip install -r $(ROOT_DIR)/python/requirements_scientific.txt; \
+		deactivate; \
+	)
 
 clean:
+	# Remove any global pip packages
+	/usr/local/bin/pip3 freeze | xargs /usr/local/bin/pip3 uninstall -y
+
+	# Uninstall Homebrew
+	# TODO: Make this actually do somthing
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+
+	# Remove all of the directories
+	rm -rf $(HOME)/.scratch
 	rm -rf $(HOME)/.vim
 	rm -rf $(HOME)/.config/nvim
 	rm -rf $(HOME)/.vimrc
 	rm -rf $(HOME)/.gitconfig
 	rm -rf $(HOME)/.gitignore
 	rm -rf $(HOME)/.bashrc
+	rm -rf $(HOME)/.virtualenv

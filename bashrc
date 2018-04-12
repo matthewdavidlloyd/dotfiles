@@ -47,14 +47,13 @@ PROMPT_COMMAND='set_prompt'
 ##########
 # Alises #
 ##########
-
 # I can't be bothered to type the extra n each time
 alias vim=nvim
 alias view="nvim +\"set readonly\""
 
 # Should probably be using python 3.x by now...
-alias python=python3
-alias pip=pip3
+alias python=/usr/local/bin/python3.6
+alias pip=/usr/local/bin/pip3
 
 # Make ls nice
 alias ls='ls -Gp'
@@ -71,10 +70,12 @@ alias imgcat="${HOME}/.scripts/imgcat.sh"     # Display images inline
 alias weather="${HOME}/.scripts/ansiweather"  # Display weather at input location
 alias welcome="${HOME}/.scripts/welcome.sh"   # Display information on startup
 
+# Virtualenvs
+alias pyscience="source ${HOME}/.virtualenv/scientific_python/bin/activate"
+
 #############
 # Functions #
 #############
-
 function mcd () {    #make and cd
   mkdir -p $1
   cd $1

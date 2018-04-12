@@ -1,6 +1,6 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins (configured with vim-plug - don't forget to :PlugInstall " 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible   " be iMproved
 filetype off       " required!
 
@@ -35,15 +35,8 @@ Plug 'tmhedberg/SimpylFold'           " Nice folding
 Plug 'vim-scripts/indentpython.vim'   " Nice Indentation
 Plug 'nvie/vim-flake8'                " PEP8 Checking
 
-" Web stuff
-Plug 'jaxbot/browserlink.vim'     " Live update browser when editing html and stuff
-                                  " This only supports Python2.7, so need to update 
-                                  " to Python3 as per github.com/jaxbot/browserlink.vim/pull/42
-
 " Colours
 Plug 'altercation/vim-colors-solarized'
-
-
 
 call plug#end()
 
