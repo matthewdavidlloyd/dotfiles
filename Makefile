@@ -54,18 +54,18 @@ neovim: setup python vimlinks powerline vim
 	nvim -c PlugInstall -c quitall
 	cp -r $(ROOT_DIR)/vimfiles/fixes/browserlink.vim $(HOME)/.nvim/plugged/browserlink.vim/autoload/browserlink.vim
 
-git: setup
+git:
 	ln -sf $(ROOT_DIR)/gitfiles/gitconfig $(HOME)/.gitconfig
 	ln -sf $(ROOT_DIR)/gitfiles/gitignore $(HOME)/.gitignore
 
-bash: setup
+bash:
 	ln -sf $(ROOT_DIR)/bash_profile $(HOME)/.bash_profile
 	ln -sf $(ROOT_DIR)/bashrc $(HOME)/.bashrc
 
-scripts: setup
+scripts:
 	ln -sf $(ROOT_DIR)/bin $(HOME)/.scripts
 	
-applescripts: setup
+applescripts:
 	ln -sf $(ROOT_DIR)/applescripts $(HOME)/.applescripts
 
 scientific-python: setup python

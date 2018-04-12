@@ -10,6 +10,18 @@ parse_git_dirty() {
   fi
 }
 
+virtualenv_info() {
+    # Get virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # If we don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo "($venv)"
+}
+
 set_prompt () {
     Blue='\[\e[01;34m\]'
     White='\[\e[01;37m\]'
@@ -28,14 +40,16 @@ set_prompt () {
         PS1+="$Blue\\u"
     fi
 
-    PS1+="$White in "
+    PS1+=" $(virtualenv_info)"
+
+    PS1+="$White in"
 
     # Print the working directory and prompt marker in blue, and reset
     # the text color to the default.
-    PS1+="$Green\\w"
+    PS1+="$Green \\w"
     if [ -n "$(parse_git_branch)" ]; then
-      PS1+="$White on "
-      PS1+="$Blue$(parse_git_branch)"
+      PS1+="$White on"
+      PS1+="$Blue $(parse_git_branch)"
       PS1+="$(parse_git_dirty)"
     else
       PS1+=" "
@@ -48,8 +62,8 @@ PROMPT_COMMAND='set_prompt'
 # Alises #
 ##########
 # I can't be bothered to type the extra n each time
-alias vim=nvim
-alias view="nvim +\"set readonly\""
+#alias vim=nvim
+#alias view="nvim +\"set readonly\""
 
 # Should probably be using python 3.x by now...
 alias python=/usr/local/bin/python3.6
