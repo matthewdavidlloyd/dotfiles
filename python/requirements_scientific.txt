@@ -58,3 +58,4 @@ virtualenv
 wcwidth
 webencodings
 widgetsnbextension
+xlrd
