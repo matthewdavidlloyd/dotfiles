@@ -19,7 +19,7 @@ virtualenv_info() {
         # If we don't have one activated
         venv=''
     fi
-    [[ -n "$venv" ]] && echo "($venv)"
+    [[ -n "$venv" ]] && echo " ($venv)"
 }
 
 set_prompt () {
@@ -40,7 +40,7 @@ set_prompt () {
         PS1+="$Blue\\u"
     fi
 
-    PS1+=" $(virtualenv_info)"
+    PS1+="$Blue$(virtualenv_info)"
 
     PS1+="$White in"
 
