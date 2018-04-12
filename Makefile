@@ -19,7 +19,7 @@ python: setup homebrew
 	# Install virtualenv
 	pip3 install virtualenv
 
-	# Create a file in which to store our virtualenv
+	# Create a directory in which to store our virtualenv
 	mkdir -p $(HOME)/.virtualenv
 
 vimlinks: setup
