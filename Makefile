@@ -1,6 +1,6 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-install: setup homebrew python git bash scripts applescripts scientific-python
+install: setup homebrew python r git bash scripts applescripts scientific-python
 
 setup:
 	mkdir -p $(HOME)/.scratch
@@ -8,6 +8,9 @@ setup:
 homebrew: setup
 	# TODO: Make this actually do somthing
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+postgres: setup homebrew
+	brew install postgresql
 
 python: setup homebrew
 	# install python 3
@@ -21,6 +24,21 @@ python: setup homebrew
 
 	# Create a directory in which to store our virtualenv
 	mkdir -p $(HOME)/.virtualenv
+
+	# Install global python packages (jupyter etc.)
+	pip install -r $(ROOT_DIR)/python/requirements_global.txt
+
+r: setup homebrew python
+	# Install R
+	brew install r
+
+	# Copy the Rprofile to home directory
+	ln -sf $(ROOT_DIR)/rfiles/Rprofile $(HOME)/.Rprofile
+
+	# Install the jupyter kernal
+	R -e "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'))"
+	R -e "devtools::install_github('IRkernel/IRkernel')"
+	R -e "IRkernel::installspec()"
 
 vimlinks: setup
 	rm -rf ~/.vim
@@ -70,13 +88,17 @@ applescripts:
 
 scientific-python: setup python
 	# Make a new virtualenv
-	virtualenv -p /usr/local/bin/python3.6 $(HOME)/.virtualenv/scientific_python; \
+	virtualenv -p /usr/local/bin/python3.6 $(HOME)/.virtualenv/scientific_python
 
+	# Install the python packages into the virtualenv
 	( \
 		source $(HOME)/.virtualenv/scientific_python/bin/activate; \
 		pip install -r $(ROOT_DIR)/python/requirements_scientific.txt; \
 		deactivate; \
 	)
+
+	# Install pandoc (for converting notebooks to pdf)
+	brew install pandoc
 
 clean:
 	# Remove any global pip packages
@@ -84,7 +106,7 @@ clean:
 
 	# Uninstall Homebrew
 	# TODO: Make this actually do somthing
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+#	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
 
 	# Remove all of the directories
 	rm -rf $(HOME)/.scratch
@@ -95,3 +117,4 @@ clean:
 	rm -rf $(HOME)/.gitignore
 	rm -rf $(HOME)/.bashrc
 	rm -rf $(HOME)/.virtualenv
+	rm -rf $(HOME)/.Rprofile

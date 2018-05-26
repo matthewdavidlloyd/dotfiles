@@ -86,6 +86,7 @@ alias welcome="${HOME}/.scripts/welcome.sh"   # Display information on startup
 
 # Virtualenvs
 alias pyscience="source ${HOME}/.virtualenv/scientific_python/bin/activate"
+alias quantenv="source ${HOME}/.virtualenv/quant/bin/activate"
 
 #############
 # Functions #
@@ -125,4 +126,11 @@ function extract {  #universal extract
       echo "$1 - file does not exist"
     fi
   fi
+}
+
+function pgres {
+    case $1 in
+        start)   brew services start postgresql  ;;
+        stop)    brew services stop postgresql  ;;
+    esac
 }
